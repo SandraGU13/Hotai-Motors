@@ -10,18 +10,18 @@ from database import sql_select_usuarios, sql_insert_usuarios, sql_edit_usuarios
 from forms import Proveedores,Producto
 
 
-App = Flask(__name__)
+app = Flask(__name__)
 ####### Connect to mysql ########
-App.config['MYSQL_Host'] = 'localhost'
-App.config['MYSQL_USER'] = 'root'
-App.config['MYSQL_PASSWORD'] = ''
-App.config['MYSQL_DB'] = 'dbhotai'
+app.config['MYSQL_Host'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_DB'] = 'dbhotai'
 
-mysql = MySQL(App)
+mysql = MySQL(app)
 #####################################
 
 
-App.secret_key = os.urandom(24)
+app.secret_key = os.urandom(24)
 
 #@App.route('/productos1') 
 #def productos1(): 
@@ -44,11 +44,11 @@ App.secret_key = os.urandom(24)
 #         sql_insert_proveedores(id_proveedores, nombre, categoria, ciudad, direccion, telefono) #llamado de la función para insertar el nuevo producto
 #         return 'OK'
 
-@App.route('/', methods=["GET","POST"])
+@app.route('/', methods=["GET","POST"])
 def Home():
     return render_template('home.html')
 
-@App.route('/Inicio', methods=["GET","POST"])
+@app.route('/Inicio', methods=["GET","POST"])
 def Inicio():
     g.nombre = request.form.get("nombre")
     return render_template('inicio.html', nombre=g.nombre)
@@ -56,7 +56,7 @@ def Inicio():
 ###################################################################
 #### Index ruta usuarios + obtención de datos de  mysql #########
 ####################################################################
-@App.route('/Usuarios')
+@app.route('/Usuarios')
 def Usuario():
     cursor = mysql.connection.cursor()
     cursor.execute(' SELECT * FROM usuarios  ')
@@ -69,7 +69,7 @@ def Usuario():
 #########################################################
 #  -----------Metodo de creación de usuarios -----------#
 #########################################################
-@App.route('/Usuarios', methods=["POST"])
+@app.route('/Usuarios', methods=["POST"])
 def Usuario_add():
     #Datos de formulario 
     nombre = request.form['name']
@@ -93,7 +93,7 @@ def Usuario_add():
 #############################################################
 #------------ Metodo de eliminiación de usuaro ------------#
 ############################################################
-@App.route('/Usuario/delete/<string:id>', methods=["GET", "POST"])
+@app.route('/Usuario/delete/<string:id>', methods=["GET", "POST"])
 def delete_usuario(id):
     cursor = mysql.connection.cursor()
     cursor.execute('DELETE FROM usuarios WHERE id = {0}'.format(id))
@@ -106,7 +106,7 @@ def delete_usuario(id):
 ###########################################################
 #-------------Metodo actualizar de usuario -------------- #
 ###########################################################
-@App.route('/Usuario/update/<id>', methods=['POST'])
+@app.route('/Usuario/update/<id>', methods=['POST'])
 def update_contact(id):
     if request.method == 'POST':
         nombre = request.form['name']
@@ -123,17 +123,17 @@ def update_contact(id):
 
 
 
-@App.route('/Productos', methods=["GET", "POST"])
+@app.route('/Productos', methods=["GET", "POST"])
 def Productos():
     return render_template('productos.html')
 
-@App.route('/Proveedores', methods=["GET", "POST"])
+@app.route('/Proveedores', methods=["GET", "POST"])
 def Proveedores():
     return render_template('proveedores.html')
 
-@App.errorhandler(404)
+@app.errorhandler(404)
 def not_found(error):
         return "La página no existe"
 
 if __name__ == '__main__':
-    App.run(debug = True)
+    app.run(debug = True)
